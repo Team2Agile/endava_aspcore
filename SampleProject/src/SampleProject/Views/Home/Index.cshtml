@@ -1,4 +1,4 @@
-﻿@model DreamCars
+﻿@model IEnumerable<Car>
 <!DOCTYPE html>
 
 <html>
@@ -9,10 +9,10 @@
 <body>
 <h1>@ViewBag.Title</h1>
 <div>
-     @foreach (Car employee in Model.MyDreamCars)
+     @foreach (Car _car in Model)
      {
-         <h2>@employee.Name</h2>
-         <h3>@employee.Model</h3>
+         <h2>@_car.Make</h2>
+         <h3>@_car.Model</h3>
          <a asp-controller="Home" asp-action="Details">Read More</a>
          <br/>
      }

@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using SampleProject.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace SampleProject
 {
@@ -30,6 +32,9 @@ namespace SampleProject
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
+
+            var connection = @"Server=(localdb)\mssqllocaldb;Database=Cars;Trusted_Connection=True;";
+            services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connection));
             services.AddMemoryCache();
         }
 
@@ -42,13 +47,7 @@ namespace SampleProject
             {
                 app.UseDeveloperExceptionPage();
             }
-            app.UseMvc(routes =>
-            {
-                routes.MapRoute(
-                  name: "default",
-                  template: "{controller}/{action}/{id?}",
-                  defaults: new { controller = "Home", action = "Index" });
-            });
+            app.UseMvc();
         }
 
         public void ConfigureQA1(IApplicationBuilder app, ILoggerFactory loggerFactory)
