@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@model DreamCars
+<!DOCTYPE html>
 
 <html>
 <head>
@@ -6,8 +7,15 @@
     <title>@ViewBag.Title</title>
 </head>
 <body>
+<h1>@ViewBag.Title</h1>
 <div>
-    @ViewBag.Test
+     @foreach (Car employee in Model.MyDreamCars)
+     {
+         <h2>@employee.Name</h2>
+         <h3>@employee.Model</h3>
+         <a asp-controller="Home" asp-action="Details">Read More</a>
+         <br/>
+     }
 </div>
 </body>
 </html>
