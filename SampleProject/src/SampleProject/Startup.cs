@@ -28,10 +28,16 @@ namespace SampleProject
                 app.UseDeveloperExceptionPage();
             }
 
+          
+        }
+
+        public void ConfigureQA1(IApplicationBuilder app, ILoggerFactory loggerFactory)
+        {
             app.Run(async (context) =>
             {
-                await context.Response.WriteAsync("Hello World!");
+                await context.Response.WriteAsync("Hello QA1 World!");
             });
         }
+
     }
 }
