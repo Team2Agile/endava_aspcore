@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.TagHelpers.Cache;
 using SampleProject.Data;
-
 using Microsoft.Extensions.Caching.Memory;
 using SampleProject.Models;
 
@@ -13,7 +11,7 @@ using SampleProject.Models;
 
 namespace SampleProject.Controllers
 {
-    [Route("[controller]/[action]")]
+    [Route("[controller]")]
     public class HomeController : Controller
     {
         public ApplicationDbContext DbContext { get; set; }
@@ -23,25 +21,46 @@ namespace SampleProject.Controllers
             this.DbContext = dbContext;
         }
 
+        [Route("[action]")]
         // GET: /<controller>/
         public IActionResult Index([FromServices] IMemoryCache cache)
         {
-            var carList = new List<Car>();
-
-            string cacheKey = "myCars";
-            if (!cache.TryGetValue(cacheKey, out carList))
+            DreamCars dc;
+            string cacheKey = "fullCarList";
+            if (cache.TryGetValue(cacheKey, out dc))
             {
-                carList = DbContext.Cars.ToList();
-                cache.Set(cacheKey, carList,
+                ViewBag.Title = "My favorite cars";
+                dc = new DreamCars();
+                dc.MyDreamCars = new List<Car>();
+                dc.MyDreamCars.Add(new Car("VW", "Golf"));
+                dc.MyDreamCars.Add(new Car("Skoda", "Octavia"));
+                dc.MyDreamCars.Add(new Car("BMW", "5 Series"));
+                dc.MyDreamCars.Add(new Car("Dacia", "Sandero"));
+
+                cache.Set(
+                    cacheKey,
+                    dc,
                     new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromMinutes(10)));
+
             }
-            return View(carList);
+            return View(dc);
         }
 
         [HttpPost]
         public IActionResult Details()
         {
-            return Ok();
+            ViewBag.Test = "test2";
+            DbContext.Cars.Add(new Car
+            {
+                Make = "Mercedes",
+                Model = "C Class",
+                Price = 35000,
+                CreatedDate = DateTime.Now
+
+            });
+            var carList = DbContext.Cars.ToList();
+
+            return View();
         }
     }
 }
