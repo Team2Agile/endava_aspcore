@@ -3,14 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.TagHelpers.Cache;
 using SampleProject.Data;
+
+using Microsoft.Extensions.Caching.Memory;
 using SampleProject.Models;
 
 // For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace SampleProject.Controllers
 {
-    [Route("[controller]")]
+    [Route("[controller]/[action]")]
     public class HomeController : Controller
     {
         public ApplicationDbContext DbContext { get; set; }
@@ -20,22 +23,25 @@ namespace SampleProject.Controllers
             this.DbContext = dbContext;
         }
 
-        [Route("[action]")]
         // GET: /<controller>/
-        public IActionResult Index()
+        public IActionResult Index([FromServices] IMemoryCache cache)
         {
-            ViewBag.Test = "test2";
-            DbContext.Cars.Add(new Car
+            var carList = new List<Car>();
+
+            string cacheKey = "myCars";
+            if (!cache.TryGetValue(cacheKey, out carList))
             {
-                Make = "Mercedes",
-                Model = "C Class",
-                Price = 35000,
-                CreatedDate = DateTime.Now
+                carList = DbContext.Cars.ToList();
+                cache.Set(cacheKey, carList,
+                    new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromMinutes(10)));
+            }
+            return View(carList);
+        }
 
-            });
-            var carList = DbContext.Cars.ToList();
-
-            return View();
+        [HttpPost]
+        public IActionResult Details()
+        {
+            return Ok();
         }
     }
 }
