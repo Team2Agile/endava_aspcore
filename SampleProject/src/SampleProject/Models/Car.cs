@@ -19,5 +19,22 @@ namespace SampleProject.Models
 
         public DateTime CreatedDate { get; set; }
 
+        private static Car defaultCar;
+        public static Car NoCar()
+        {
+            if (defaultCar != null)
+                return defaultCar;
+            else
+            {
+                defaultCar = new Car
+                {
+                    Make = "No Make",
+                    Model = "No Model",
+                    Price = -1
+                };
+            }
+            return defaultCar;
+        }
+
     }
 }

@@ -9,13 +9,14 @@
 <body>
 <h1>@ViewBag.Title</h1>
 <div>
-     @foreach (Car _car in Model)
-     {
-         <h2>@_car.Make</h2>
-         <h3>@_car.Model</h3>
-         <a asp-controller="Home" asp-action="Details">Read More</a>
-         <br/>
-     }
+    @foreach (Car _car in Model)
+    {
+        <h2>@_car.Make</h2>
+        <h3>@_car.Model</h3>
+        <a asp-controller="Home" asp-action="Details" asp-route-id="@_car.Id">Read More</a>
+        <br/>
+    }
 </div>
+<h5><a asp-controller="Home" asp-action="Create">Create new</a></h5>
 </body>
 </html>
