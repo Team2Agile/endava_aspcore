@@ -10,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SampleProject.Data;
 using Microsoft.EntityFrameworkCore;
+using SampleProject.Repositories;
 
 namespace SampleProject
 {
@@ -37,7 +38,8 @@ namespace SampleProject
             var connection = @"Server=(localdb)\mssqllocaldb;Database=Cars;Trusted_Connection=True;";
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connection));
             services.AddMemoryCache();
-            services.AddSingleton<IConfiguration>(Configuration);
+            services.AddSingleton(Configuration);
+            services.AddTransient<ICarRepository,CarRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
